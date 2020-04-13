@@ -1,5 +1,4 @@
 <launch>
-
     <arg name="robot_namespace" default="/"/>
     <arg name="world_name" default="$(find scout_gazebo_sim)worlds/weston_robot_empty.world"/>
 
