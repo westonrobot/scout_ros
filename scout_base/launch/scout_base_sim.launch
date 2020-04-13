@@ -12,7 +12,7 @@
     <arg name="simulated_robot" default="true" />
     <arg name="control_rate" default="50" />
 
-    <node name="scout_base_sim_node" pkg="scout_base" type="scout_base_sim_node" output="screen">
+    <node name="scout_base_node" pkg="scout_base" type="scout_base_node" output="screen">
         <param name="simulated_robot" type="bool" value="$(arg simulated_robot)" />
         <param name="control_rate" type="int" value="$(arg control_rate)" />
 

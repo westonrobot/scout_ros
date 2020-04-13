@@ -1,0 +1,4 @@
+<launch>
+    <!-- Scout base only (with no onboard sensors) in an empty world -->
+    <include file="$(find scout_gazebo_sim)/launch/scout_empty_world.launch" />
+</launch>
