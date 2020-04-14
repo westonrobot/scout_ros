@@ -104,8 +104,6 @@
 
     <!-- Onboard sensors -->
     <xacro:if value="$(arg onboard_sensors)">
-        <!-- <xacro:include filename="$(find scout_description)/urdf/onboard_sensors.xacro" />
-        <xacro:sensor_frame /> -->
         <xacro:include filename="$(find scout_description)/urdf/onboard_sensors.urdf" />
     </xacro:if>
 
