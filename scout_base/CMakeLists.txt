@@ -55,7 +55,7 @@ target_link_libraries(scout_base_node scout_messenger ${catkin_LIBRARIES})
 ## Install ##
 #############
 
-roslaunch_add_file_check(launch)
+# roslaunch_add_file_check(launch)
 
 install(TARGETS scout_messenger scout_base_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
