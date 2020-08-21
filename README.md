@@ -22,14 +22,11 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
 1. Install dependent libraries
 
     ```
-<<<<<<< HEAD
     $ sudo apt install libasio-dev
     $ sudo apt install ros-$ROS_DISTRO-teleop-twist-keyboard
-=======
     $ sudo apt install ros-melodic-teleop-twist-keyboard
     $ sudo apt-get install ros-melodic-joint-state-publisher-gui
     $ sudo apt install ros-melodic-ros-controllers
->>>>>>> scout_sim
     ```
 
 2. Clone the packages into your catkin workspace and compile
@@ -58,8 +55,6 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
     $ roslaunch scout_bringup scout_minimal_uart.launch
     ```
 
-<<<<<<< HEAD
-=======
 * Start the Webots-based simulation (Scout V1)
 
     ```
@@ -72,7 +67,6 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
     $ roslaunch scout_bringup scout_base_gazebo_sim.launch
     ```
 
->>>>>>> scout_sim
 * Start the keyboard tele-op node
 
     ```
