@@ -26,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES scout_messenger
-  CATKIN_DEPENDS scout_msgs roscpp sensor_msgs
+  CATKIN_DEPENDS scout_msgs roscpp sensor_msgs wrp_sdk
 #   DEPENDS Boost
 )
 
@@ -52,7 +52,7 @@ target_link_libraries(scout_base_node scout_messenger ${catkin_LIBRARIES})
 ## Install ##
 #############
 
-roslaunch_add_file_check(launch)
+# roslaunch_add_file_check(launch)
 
 install(TARGETS scout_messenger scout_base_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
