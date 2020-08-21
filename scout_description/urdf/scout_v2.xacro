@@ -5,6 +5,7 @@
 
     <xacro:arg name="robot_namespace" default="/" />
     <xacro:arg name="urdf_extras" default="empty.urdf" />
+    <xacro:arg name="onboard_sensors" default="true" />
 
     <xacro:include filename="$(find scout_description)/urdf/scout_wheel_type1.xacro" />
     <xacro:include filename="$(find scout_description)/urdf/scout_wheel_type2.xacro" />
@@ -52,6 +53,14 @@
         <child link="chassis_link" />
     </joint> -->
 
+    <link name="base_footprint"/>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <origin xyz="0 0 ${wheel_vertical_offset - wheel_radius}" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_footprint" />
+    </joint>
+
     <link name="inertial_link">
         <inertial>
             <mass value="40" />
@@ -92,6 +101,11 @@
     <xacro:scout_wheel_type2 wheel_prefix="rear_right">
         <origin xyz="${-wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="3.14 0 0" />
     </xacro:scout_wheel_type2>
+
+    <!-- Onboard sensors -->
+    <xacro:if value="$(arg onboard_sensors)">
+        <xacro:include filename="$(find scout_description)/urdf/onboard_sensors.urdf" />
+    </xacro:if>
 
     <!-- Additional definitions -->
     <xacro:include filename="$(arg urdf_extras)" />

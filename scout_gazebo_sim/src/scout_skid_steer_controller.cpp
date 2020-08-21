@@ -11,7 +11,7 @@ using namespace westonrobot;
 
 int main(int argc, char **argv) {
   // setup ROS node
-  ros::init(argc, argv, "scout_odom");
+  ros::init(argc, argv, "scout_skid_steer");
   ros::NodeHandle node(""), private_node("~");
 
   // fetch parameters

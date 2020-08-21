@@ -154,7 +154,7 @@ target_link_libraries(scout_webots_node ${catkin_LIBRARIES})
 ## Install ##
 #############
 
-roslaunch_add_file_check(launch)
+# roslaunch_add_file_check(launch)
 
 install(TARGETS scout_webots_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

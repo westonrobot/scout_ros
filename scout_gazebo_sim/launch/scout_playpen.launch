@@ -37,7 +37,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
         <arg name="debug" value="false"/>
     </include>
 
-    <include file="$(find scout_gazebo_sim)/launch/spawn_scout_v2.launch"></include>
-        
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scout_description)/rviz/model_display.rviz" />
+    <include file="$(find scout_gazebo_sim)/launch/spawn_scout_v2_sensors.launch"></include>
+    <include file="$(find scout_base)/launch/scout_base_sim.launch" />
+
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scout_description)/rviz/model_display.rviz" /> -->
 </launch>
