@@ -1,17 +1,12 @@
-# ROS Packages for Scout Mobile Base
+# ROS Packages for Scout Mobile Robot
 
 ## Packages
 
+This repository contains minimal packages to control the scout robot using ROS. 
+
 * scout_bringup: launch and configuration files to start ROS nodes 
-* scout_base: a ROS wrapper around Scout SDK to monitor and control the robot
+* scout_base: a ROS wrapper around [wrp_sdk](https://github.com/westonrobot/wrp_sdk) to monitor and control the scout robot
 * scout_msgs: scout related message definitions
-* (scout_ros: meta package for the Scout robot ROS packages)
-
-The following diagram may help you to understand how the components are inter-connected with each other:
-
-<img src="./docs/diagram.png" height="135" >
-
-The purple blocks represent ROS packages included within this repository.
 
 ## Communication interface setup
 
@@ -22,11 +17,8 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
 1. Install dependent libraries
 
     ```
-    $ sudo apt install libasio-dev
-    $ sudo apt install ros-$ROS_DISTRO-teleop-twist-keyboard
-    $ sudo apt install ros-melodic-teleop-twist-keyboard
-    $ sudo apt-get install ros-melodic-joint-state-publisher-gui
-    $ sudo apt install ros-melodic-ros-controllers
+    $ sudo apt install -y libasio-dev
+    $ sudo apt install -y ros-$ROS_DISTRO-teleop-twist-keyboard
     ```
 
 2. Clone the packages into your catkin workspace and compile
@@ -36,7 +28,7 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
     ```
     $ cd ~/catkin_ws/src
     $ git clone https://github.com/westonrobot/wrp_sdk.git
-    $ git clone https://github.com/westonrobot/scout_ros.git
+    $ git clone https://github.com/westonrobot/scout_base.git
     $ cd ..
     $ catkin_make
     ```
@@ -53,18 +45,6 @@ Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-int
         
     ```
     $ roslaunch scout_bringup scout_minimal_uart.launch
-    ```
-
-* Start the Webots-based simulation (Scout V1)
-
-    ```
-    $ roslaunch scout_bringup scout_base_webots_sim.launch
-    ```
-
-* Start the Gazebo-based simulation (Scout V2)
-
-    ```
-    $ roslaunch scout_bringup scout_base_gazebo_sim.launch
     ```
 
 * Start the keyboard tele-op node
