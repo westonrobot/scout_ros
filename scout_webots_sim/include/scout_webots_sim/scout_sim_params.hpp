@@ -12,7 +12,7 @@
 
 #include <cstdint>
 
-namespace wescore
+namespace westonrobot
 {
 struct ScoutSimParams
 {
@@ -30,7 +30,7 @@ struct ScoutSimParams
     static constexpr double max_angular_speed = 0.7853; // in rad/s
     static constexpr double max_speed_cmd = 10.0;       // in rad/s
 };
-} // namespace wescore
+} // namespace westonrobot
 
 
 #endif /* SCOUT_SIM_PARAMS_HPP */

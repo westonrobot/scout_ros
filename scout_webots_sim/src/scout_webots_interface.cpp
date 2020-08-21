@@ -20,7 +20,7 @@
 
 #include "scout_webots_sim/scout_sim_params.hpp"
 
-namespace wescore
+namespace westonrobot
 {
 ScoutWebotsInterface::ScoutWebotsInterface(ros::NodeHandle *nh, ScoutROSMessenger *msger, uint32_t time_step)
     : nh_(nh), messenger_(msger), time_step_(time_step)
@@ -126,4 +126,4 @@ void ScoutWebotsInterface::UpdateSimState()
     }
 }
 
-} // namespace wescore
+} // namespace westonrobot

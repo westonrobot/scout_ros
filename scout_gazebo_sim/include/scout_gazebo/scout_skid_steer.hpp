@@ -15,7 +15,7 @@
 
 #include <string>
 
-namespace wescore {
+namespace westonrobot {
 class ScoutSkidSteer {
  public:
   ScoutSkidSteer(ros::NodeHandle *nh, std::string robot_name = "");
@@ -44,6 +44,6 @@ class ScoutSkidSteer {
 
   void TwistCmdCallback(const geometry_msgs::Twist::ConstPtr &msg);
 };
-}  // namespace wescore
+}  // namespace westonrobot
 
 #endif /* SCOUT_SKID_STEER_HPP */
