@@ -12,7 +12,7 @@
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Float64.h>
 
-namespace wescore {
+namespace westonrobot {
 ScoutSkidSteer::ScoutSkidSteer(ros::NodeHandle *nh, std::string robot_name)
     : nh_(nh), robot_name_(robot_name) {
   motor_fr_topic_ = robot_name_ + "/scout_motor_fr_controller/command";
@@ -57,4 +57,4 @@ void ScoutSkidSteer::TwistCmdCallback(
   motor_rr_pub_.publish(motor_cmd[3]);
 }
 
-}  // namespace wescore
+}  // namespace westonrobot

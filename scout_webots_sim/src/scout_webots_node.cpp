@@ -19,7 +19,7 @@
 
 #include "scout_webots_sim/scout_webots_interface.hpp"
 
-using namespace wescore;
+using namespace westonrobot;
 
 ros::ServiceClient timeStepClient;
 webots_ros::set_int timeStepSrv;

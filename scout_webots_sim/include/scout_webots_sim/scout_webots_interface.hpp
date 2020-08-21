@@ -18,7 +18,7 @@
 
 #include "scout_base/scout_messenger.hpp"
 
-namespace wescore
+namespace westonrobot
 {
 class ScoutWebotsInterface
 {
@@ -36,6 +36,6 @@ private:
     std::string robot_name_ = "agilex_scout";
     const std::vector<std::string> motor_names_{"motor_fr", "motor_fl", "motor_rl", "motor_rr"};
 };
-} // namespace wescore
+} // namespace westonrobot
 
 #endif /* SCOUT_WEBOTS_INTERFACE_HPP */

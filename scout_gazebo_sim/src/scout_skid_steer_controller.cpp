@@ -7,7 +7,7 @@
 
 #include "scout_gazebo/scout_skid_steer.hpp"
 
-using namespace wescore;
+using namespace westonrobot;
 
 int main(int argc, char **argv) {
   // setup ROS node
