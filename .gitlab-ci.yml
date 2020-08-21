@@ -6,6 +6,7 @@ build:
     - apt update && apt -y install libasio-dev ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
+    - cd /catkin_ws/src && git clone https://github.com/westonrobot/wrp_sdk.git
     - cd /catkin_ws/src && cp -r $CI_BUILDS_DIR .
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make"
 #   artifacts:
