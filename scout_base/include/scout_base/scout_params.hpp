@@ -19,8 +19,8 @@ struct ScoutParams
     /* Scout Parameters */
     static constexpr double max_steer_angle = 30.0; // in degree
 
-    static constexpr double track = 0.576;        // in meter (left & right wheel distance)
-    static constexpr double wheelbase = 0.648;    // in meter (front & rear wheel distance)
+    static constexpr double track = 0.58306;        // in meter (left & right wheel distance)
+    static constexpr double wheelbase = 0.498;    // in meter (front & rear wheel distance)
     static constexpr double wheel_radius = 0.165; // in meter
 
     // from user manual v1.2.8 P18
