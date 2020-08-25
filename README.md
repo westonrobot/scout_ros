@@ -12,6 +12,10 @@ This repository contains minimal packages to control the scout robot using ROS.
 
 Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-interface) of "wrp_sdk" package for setup of communication interfaces.
 
+#### Note on CAN interface on Nvidia Jetson Platforms
+
+Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main SOC. If you're using a dev kit, you need to add a CAN transceiver for proper CAN communication. 
+
 ## Basic usage of the ROS package
 
 1. Install dependent libraries
