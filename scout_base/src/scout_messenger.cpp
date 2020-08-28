@@ -179,7 +179,16 @@ void ScoutROSMessenger::PublishStateToROS()
 void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular)
 {
     current_time_ = ros::Time::now();
-    double dt = 1.0 / sim_control_rate_;
+
+    double dt = (current_time_ - last_time_).toSec();
+
+    static bool init_run = true;
+    if (init_run)
+    {
+        last_time_ = current_time_;
+        init_run = false;
+        return;
+    }
 
     // publish scout state message
     scout_msgs::ScoutStatus status_msg;
@@ -211,6 +220,9 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular)
 
     // publish odometry and tf
     PublishOdometryToROS(linear, angular, dt);
+
+    // record time for next integration
+    last_time_ = current_time_;
 }
 
 void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular, double dt)
