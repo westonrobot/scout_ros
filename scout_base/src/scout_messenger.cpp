@@ -13,6 +13,8 @@
 
 #include "scout_msgs/ScoutStatus.h"
 
+#include <ros/console.h>
+
 namespace westonrobot
 {
 ScoutROSMessenger::ScoutROSMessenger(ros::NodeHandle *nh) : scout_(nullptr), nh_(nh)
@@ -131,6 +133,7 @@ void ScoutROSMessenger::PublishStateToROS()
     current_time_ = ros::Time::now();
     double dt = (current_time_ - last_time_).toSec();
 
+
     static bool init_run = true;
     if (init_run)
     {
@@ -171,6 +174,9 @@ void ScoutROSMessenger::PublishStateToROS()
 
     // publish odometry and tf
     PublishOdometryToROS(state.linear_velocity, state.angular_velocity, dt);
+    // ROS_DEBUG("dt is %lg",dt);
+    std::cout<<"dt is"<<dt<< std::endl;
+    ROS_INFO("dt is %lg",dt);
 
     // record time for next integration
     last_time_ = current_time_;
@@ -179,7 +185,20 @@ void ScoutROSMessenger::PublishStateToROS()
 void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular)
 {
     current_time_ = ros::Time::now();
-    double dt = 1.0 / sim_control_rate_;
+
+    static bool init_run = true;
+    if (init_run)
+    {
+        last_time_ = current_time_;
+        init_run = false;
+        return;
+    }
+    double dt = (current_time_ - last_time_).toSec();
+    
+    // double dt = 1.0 / sim_control_rate_;
+    ROS_INFO("dt is %lg",dt);
+    // double test_time = current_time_.toSec();
+    // ROS_INFO("current time is %lg",test_time);
 
     // publish scout state message
     scout_msgs::ScoutStatus status_msg;
@@ -211,6 +230,7 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular)
 
     // publish odometry and tf
     PublishOdometryToROS(linear, angular, dt);
+    last_time_ = current_time_;
 }
 
 void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular, double dt)
