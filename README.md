@@ -71,7 +71,7 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 
     The default command values of the keyboard teleop node are high, make sure you decrease the speed commands before starting to control the robot with your keyboard! Have your remote controller ready to take over the control whenever necessary. 
 
-## Further usage of ROS packages
+## Update the package for your customized robot
 A brief overview on how to use this ROS package for your custom setup of the scout platform is described in this segment. A detailed example of such applications can be found in the [scout_navigation]() repository.
 
 ### Additional Sensors
