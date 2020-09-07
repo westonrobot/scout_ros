@@ -10,10 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
     sensor_msgs
     std_msgs
     geometry_msgs
-    scout_msgs
-    wrp_sdk
     tf2 
     tf2_ros
+    wrp_sdk
+    scout_msgs
 )
     
 # find_package(Boost REQUIRED COMPONENTS chrono)
@@ -25,7 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES scout_messenger
-  CATKIN_DEPENDS scout_msgs roscpp sensor_msgs wrp_sdk
+  CATKIN_DEPENDS wrp_sdk scout_msgs
 #   DEPENDS Boost
 )
 
@@ -59,5 +59,5 @@ install(TARGETS scout_messenger scout_base_node
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
-install(DIRECTORY launch urdf
+install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
