@@ -88,10 +88,4 @@ Another frequent usage would be using sensor fusion of an IMU. In such a scenari
 
 ```
 $ scout_bringup scout_minimal.launch odom_topic_name:="<custom_name>"
-``` 
-
-
-
-## Summary of ROS packages
-
-- scout_minimal.launch: Creates ros node that 
+```

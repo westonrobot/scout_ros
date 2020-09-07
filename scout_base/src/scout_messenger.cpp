@@ -168,7 +168,7 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular) {
     init_run = false;
     return;
   }
-  ROS_INFO("dt is %lg",dt);
+  
 
   // publish scout state message
   scout_msgs::ScoutStatus status_msg;

@@ -3,8 +3,7 @@
 <robot name="scout_v2" 
     xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <xacro:arg name="robot_namespace" default="/" />
-    <xacro:arg name="onboard_sensors" default="false" />
+    <xacro:arg name="robot_namespace" default="/" /> 
 
     <xacro:include filename="$(find scout_description)/urdf/scout_wheel_type1.xacro" />
     <xacro:include filename="$(find scout_description)/urdf/scout_wheel_type2.xacro" />
@@ -84,11 +83,4 @@
         <origin xyz="${-wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="3.14 0 0" />
     </xacro:scout_wheel_type2>
 
-    <!-- Onboard sensors -->
-    <xacro:if value="$(arg onboard_sensors)">
-        <xacro:include filename="$(find scout_description)/urdf/onboard_sensors.urdf" />
-    </xacro:if>
-
-    <!-- Gazebo definitions  -->
-    <xacro:include filename="$(find scout_description)/urdf/scout_v2.gazebo" />
 </robot>
