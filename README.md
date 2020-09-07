@@ -75,7 +75,7 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 A brief overview on how to use this ROS package for your custom setup of the scout platform is described in this segment. A detailed example of such applications can be found in the [scout_navigation]() repository.
 
 ### Additional Sensors
-One possible usage of this package is when additional sensors, such as a lidar is mounted. A new .xacro file will be required to describe the relative position of the new sensor for the publishing of tf frames. 
+It's likely that you may want to add additional sensors to the scout mobile platform, such as a Lidar for navigation. In such cases, a new .xacro file needs to be created to describe the relative pose of the new sensor with respect to the robot base, so that the sensor frame can be reflected in the robot tf tree. 
 
 A [sample](samples/scout_v2_nav.xacro) .xacro file is present in this repository. The base .xacro file of an empty scout platform is included in this sample, and additional links are defined. 
 
