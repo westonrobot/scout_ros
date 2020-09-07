@@ -1,4 +1,0 @@
-<launch>
-    <!-- Scout base with a hokuyo laser in an testing world -->
-    <include file="$(find scout_gazebo_sim)/launch/scout_playpen.launch" />
-</launch>

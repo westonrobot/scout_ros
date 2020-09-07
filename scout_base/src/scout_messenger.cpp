@@ -13,16 +13,18 @@
 
 #include "scout_msgs/ScoutStatus.h"
 
+
 namespace westonrobot {
 ScoutROSMessenger::ScoutROSMessenger(ros::NodeHandle *nh)
     : scout_(nullptr), nh_(nh) {}
+
 
 ScoutROSMessenger::ScoutROSMessenger(ScoutBase *scout, ros::NodeHandle *nh)
     : scout_(scout), nh_(nh) {}
 
 void ScoutROSMessenger::SetupSubscription() {
   // odometry publisher
-  odom_publisher_ = nh_->advertise<nav_msgs::Odometry>(odom_frame_, 50);
+  odom_publisher_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
   status_publisher_ =
       nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
 
@@ -106,6 +108,7 @@ void ScoutROSMessenger::LightCmdCallback(
   }
 }
 
+
 void ScoutROSMessenger::PublishStateToROS() {
   current_time_ = ros::Time::now();
   double dt = (current_time_ - last_time_).toSec();
@@ -145,7 +148,6 @@ void ScoutROSMessenger::PublishStateToROS() {
   status_msg.rear_light_state.mode = state.rear_light_state.mode;
   status_msg.rear_light_state.custom_value =
       state.front_light_state.custom_value;
-
   status_publisher_.publish(status_msg);
 
   // publish odometry and tf
@@ -166,6 +168,7 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular) {
     init_run = false;
     return;
   }
+  
 
   // publish scout state message
   scout_msgs::ScoutStatus status_msg;
@@ -236,7 +239,7 @@ void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular,
   // publish odometry and tf messages
   nav_msgs::Odometry odom_msg;
   odom_msg.header.stamp = current_time_;
-  odom_msg.header.frame_id = odom_frame_;
+  odom_msg.header.frame_id = "testes";
   odom_msg.child_frame_id = base_frame_;
 
   odom_msg.pose.pose.position.x = position_x_;

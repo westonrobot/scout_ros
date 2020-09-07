@@ -45,11 +45,21 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     $ roslaunch scout_bringup scout_minimal.launch
     ```
 
+    The [scout_bringup scout_minimal.launch](scout_bringup/launch/scout_minimal.launch) has 4 parameters:
+
+    - port_name: Determines port to communicate with robot. Default = "can0"
+    - simulated_robot: Indicates if launching with a simulation. Default = "false"
+    - model_xacro: Indicates the target .xacro file for the publishing of tf frames. Default = [scout_v2.xacro](scout_base/description/scout_v2.xacro)
+    - odom_topic_name: Sets the name of the topic which calculated odometry is published. Defaults = "odom"
+
     or (if you're using a serial port)
         
     ```
     $ roslaunch scout_bringup scout_minimal_uart.launch
     ```
+
+    - Similarly, the [scout_bringup_uart.launch](scout_bringup/launch/scout_minimal_uart.launch) has the same 4 parameters with port_name default = "/dev/ttyUSB0".
+
 
 * Start the keyboard tele-op node
 
@@ -60,3 +70,22 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     **SAFETY PRECAUSION**: 
 
     The default command values of the keyboard teleop node are high, make sure you decrease the speed commands before starting to control the robot with your keyboard! Have your remote controller ready to take over the control whenever necessary. 
+
+## Update the package for your customized robot
+
+A brief overview of how to use this ROS package for your custom setup of the scout platform is described in this segment. A detailed example of such applications can be found in the [scout_navigation]() repository.
+
+### Additional Sensors
+It's likely that you may want to add additional sensors to the scout mobile platform, such as a Lidar for navigation. In such cases, a new .xacro file needs to be created to describe the relative pose of the new sensor with respect to the robot base, so that the sensor frame can be reflected in the robot tf tree. 
+
+A [sample](samples/scout_v2_nav.xacro) .xacro file is present in this repository. The base .xacro file of an empty scout platform is included in this sample, and additional links are defined. 
+
+The nodes in this ROS package are made to handle only the control of the scout base and publishing of the status. Additional nodes may need to be created by the user to handle the sensors.
+
+### Alternative Odometry Calculation
+
+Another frequent usage would be using sensor fusion of an IMU. In such a scenario, the odometry calculated by this package would likely be needed to publish under a custom name, instead of "/odom". Therefore, the name of the topic can be set by using
+
+```
+$ scout_bringup scout_minimal.launch odom_topic_name:="<custom_name>"
+```
