@@ -83,7 +83,8 @@ The nodes in this ROS package is made to handle only the control of the scout pl
 
 ### Alternative Odometry Calculation
 
-Another frequent usage would be using sensor fusion of an IMU. In such a scenario, the odometry calculated by this package would likely be needed to published under a custom name, instead of "/odom". Therefore, the nanme of the topic can be set using
+Another frequent usage would be using sensor fusion of an IMU. In such a scenario, the odometry calculated by this package would likely be needed to publish under a custom name, instead of "/odom". Therefore, the name of the topic can be set by using
+
 ```
 $ scout_bringup scout_minimal.launch odom_topic_name:="<custom_name>"
 ``` 
