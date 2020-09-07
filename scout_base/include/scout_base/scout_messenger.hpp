@@ -30,6 +30,7 @@ public:
 
     std::string odom_frame_;
     std::string base_frame_;
+    std::string odom_topic_name_;
 
     bool simulated_robot_ = false;
     int sim_control_rate_ = 50;

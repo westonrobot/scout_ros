@@ -24,7 +24,7 @@ ScoutROSMessenger::ScoutROSMessenger(ScoutBase *scout, ros::NodeHandle *nh)
 
 void ScoutROSMessenger::SetupSubscription() {
   // odometry publisher
-  odom_publisher_ = nh_->advertise<nav_msgs::Odometry>(odom_frame_, 50);
+  odom_publisher_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
   status_publisher_ =
       nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
 
@@ -239,7 +239,7 @@ void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular,
   // publish odometry and tf messages
   nav_msgs::Odometry odom_msg;
   odom_msg.header.stamp = current_time_;
-  odom_msg.header.frame_id = odom_frame_;
+  odom_msg.header.frame_id = "testes";
   odom_msg.child_frame_id = base_frame_;
 
   odom_msg.pose.pose.position.x = position_x_;
