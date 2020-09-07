@@ -11,6 +11,7 @@
     -->
     <arg name="port_name" default="can0" />
     <arg name="simulated_robot" default="false" />
+    <arg name = "model_xacro" default = "$(find scout_base)/description/scout_v2.xacro" />>
 
     <node name="scout_base_node" pkg="scout_base" type="scout_base_node" output="screen">
         <param name="port_name" type="string" value="$(arg port_name)" />
@@ -19,4 +20,7 @@
         <param name="odom_frame" type="string" value="odom" />
         <param name="base_frame" type="string" value="base_link" />
     </node>
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model_xacro)"/>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 </launch>
