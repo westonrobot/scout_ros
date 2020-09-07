@@ -79,7 +79,7 @@ One possible usage of this package is when additional sensors, such as a lidar i
 
 A [sample](samples/scout_v2_nav.xacro) .xacro file is present in this repository. The base .xacro file of an empty scout platform is included in this sample, and additional links are defined. 
 
-The nodes in this ROS package is made to handle only the control of the scout platform and publishing of the status of the platform. A separate node should be created by the user to handle the sensors.
+The nodes in this ROS package are made to handle only the control of the scout base and publishing of the status. Additional nodes may need to be created by the user to handle the sensors.
 
 ### Alternative Odometry Calculation
 
