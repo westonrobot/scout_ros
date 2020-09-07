@@ -45,11 +45,21 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     $ roslaunch scout_bringup scout_minimal.launch
     ```
 
+    The [scout_bringup scout_minimal.launch](scout_bringup/launch/scout_minimal.launch) has 4 parameters:
+
+    - port_name: Determines port to communicate with robot. Default = "can0"
+    - simulated_robot: Indicates if launching with a simulation. Default = "false"
+    - model_xacro: Indicates the target .xacro file for the publishing of tf frames. Default = [scout_v2.xacro](scout_base/description/scout_v2.xacro)
+    - odom_topic_name: Sets the name of the topic which calculated odometry is published. Defaults = "odom"
+
     or (if you're using a serial port)
         
     ```
     $ roslaunch scout_bringup scout_minimal_uart.launch
     ```
+
+    - Similarly, the [scout_bringup_uart.launch](scout_bringup/launch/scout_minimal_uart.launch) has the same 4 parameters with port_name default = "/dev/ttyUSB0".
+
 
 * Start the keyboard tele-op node
 
@@ -60,3 +70,7 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     **SAFETY PRECAUSION**: 
 
     The default command values of the keyboard teleop node are high, make sure you decrease the speed commands before starting to control the robot with your keyboard! Have your remote controller ready to take over the control whenever necessary. 
+
+## Summary of ROS packages
+
+- scout_minimal.launch: Creates ros node that 
