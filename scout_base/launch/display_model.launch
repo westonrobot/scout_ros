@@ -6,5 +6,5 @@
                 <arg name = "model_xacro" default = "$(arg model_xacro)" />
         </include>
 
-        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scout_viz)/rviz/model_display.rviz" />
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scout_base)/rviz/model_display.rviz" />
 </launch>
