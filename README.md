@@ -64,12 +64,12 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     $ roslaunch scout_bringup scout_minimal.launch
     ```
 
-    The [scout_bringup scout_minimal.launch](scout_bringup/launch/scout_minimal.launch) has 4 parameters:
+    The [scout_bringup/scout_minimal.launch](scout_bringup/launch/scout_minimal.launch) has 4 parameters:
 
-    - port_name: Determines port to communicate with robot. Default = "can0"
-    - simulated_robot: Indicates if launching with a simulation. Default = "false"
-    - model_xacro: Indicates the target .xacro file for the publishing of tf frames. Default = [scout_v2.xacro](scout_base/description/scout_v2.xacro)
-    - odom_topic_name: Sets the name of the topic which calculated odometry is published. Defaults = "odom"
+    - port_name: specifies the port used to communicate with the robot, default = "can0"
+    - simulated_robot: indicates if launching with a simulation, default = "false"
+    - model_xacro: specifies the target ".xacro" file for the publishing of tf frames, default = [scout_v2.xacro](scout_base/description/scout_v2.xacro)
+    - odom_topic_name: sets the name of the topic which calculated odometry is published to, defaults = "odom"
 
     or (if you're using a serial port)
         
