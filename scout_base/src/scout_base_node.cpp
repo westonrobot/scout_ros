@@ -3,7 +3,7 @@
 #include <sensor_msgs/JointState.h>
 #include <tf/transform_broadcaster.h>
 
-#include "wrp_sdk/platforms/scout/scout_base.hpp"
+#include "ugv_sdk/scout/scout_base.hpp"
 #include "scout_base/scout_messenger.hpp"
 
 using namespace westonrobot;
