@@ -1,7 +1,7 @@
 ## Build and test as catkin package
 kinetic-catkin-build:
   stage: build
-  image: rduweston/ubuntu-ci:kinetic-xenial
+  image: rduweston/ubuntu-ci:kinetic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
@@ -12,7 +12,7 @@ kinetic-catkin-build:
 
 kinetic-catkin-isolated-build:
   stage: build
-  image: rduweston/ubuntu-ci:kinetic-xenial
+  image: rduweston/ubuntu-ci:kinetic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
@@ -23,7 +23,7 @@ kinetic-catkin-isolated-build:
 
 melodic-catkin-build:
   stage: build
-  image: rduweston/ubuntu-ci:melodic-bionic
+  image: rduweston/ubuntu-ci:melodic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
@@ -34,7 +34,7 @@ melodic-catkin-build:
 
 melodic-catkin-isolated-build:
   stage: build
-  image: rduweston/ubuntu-ci:melodic-bionic
+  image: rduweston/ubuntu-ci:melodic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
@@ -45,7 +45,7 @@ melodic-catkin-isolated-build:
 
 noetic-catkin-build:
   stage: build
-  image: rduweston/ubuntu-ci:noetic-focal
+  image: rduweston/ubuntu-ci:noetic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
@@ -56,7 +56,7 @@ noetic-catkin-build:
 
 noetic-catkin-isolated-build:
   stage: build
-  image: rduweston/ubuntu-ci:noetic-focal
+  image: rduweston/ubuntu-ci:noetic
   before_script:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
