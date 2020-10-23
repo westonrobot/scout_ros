@@ -6,7 +6,7 @@ kinetic-catkin-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make"
 
@@ -17,7 +17,7 @@ kinetic-catkin-isolated-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make_isolated --install"
 
@@ -28,7 +28,7 @@ melodic-catkin-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make"
 
@@ -39,7 +39,7 @@ melodic-catkin-isolated-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make_isolated --install"
 
@@ -50,7 +50,7 @@ noetic-catkin-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make"
 
@@ -61,6 +61,6 @@ noetic-catkin-isolated-build:
     - apt update && apt -y install ros-$ROS_DISTRO-teleop-twist-keyboard
   script:
     - mkdir -p /catkin_ws/src && cd /catkin_ws/src && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace"
-    - cd /catkin_ws/src && git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
+    - cd /catkin_ws/src && git clone --recursive https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/westonrobot/core/wrp_sdk.git
     - cp -r /builds/$CI_PROJECT_PATH /catkin_ws/src/scout_base
     - cd /catkin_ws && /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make_isolated --install"
