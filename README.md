@@ -5,7 +5,7 @@
 This repository contains minimal packages to control the scout robot using ROS. 
 
 * scout_bringup: launch and configuration files to start ROS nodes 
-* scout_base: a ROS wrapper around [wrp_sdk](https://github.com/westonrobot/wrp_sdk) to monitor and control the scout robot
+* scout_base: a ROS wrapper around [ugv_sdk](https://github.com/westonrobot/ugv_sdk) to monitor and control the scout robot
 * scout_description: URDF model for the mobile base, a sample urdf (scout_description/sample/scout_v2_nav.xacro) is provided for customized robot with addtional sensors
 * scout_msgs: scout related message definitions
 
@@ -29,7 +29,7 @@ $ scout_bringup scout_minimal.launch odom_topic_name:="<custom_name>"
 
 ## Communication interface setup
 
-Please refer to the [README](https://github.com/westonrobot/wrp_sdk#hardware-interface) of "wrp_sdk" package for setup of communication interfaces.
+Please refer to the [README](https://github.com/westonrobot/ugv_sdk_sdk#hardware-interface) of "ugv_sdk" package for setup of communication interfaces.
 
 #### Note on CAN interface on Nvidia Jetson Platforms
 
