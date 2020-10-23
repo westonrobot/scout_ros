@@ -50,7 +50,7 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 
     ```
     $ cd ~/catkin_ws/src
-    $ git clone https://github.com/westonrobot/wrp_sdk.git
+    $ git clone --recursive https://github.com/westonrobot/ugv_sdk.git
     $ git clone https://github.com/westonrobot/scout_base.git
     $ cd ..
     $ catkin_make
