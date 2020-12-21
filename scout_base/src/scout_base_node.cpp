@@ -1,5 +1,7 @@
-#include <nav_msgs/Odometry.h>
+#include <memory>
+
 #include <ros/ros.h>
+#include <nav_msgs/Odometry.h>
 #include <sensor_msgs/JointState.h>
 #include <tf/transform_broadcaster.h>
 
@@ -8,11 +10,11 @@
 
 using namespace westonrobot;
 
-ScoutBase robot;
+std::shared_ptr<ScoutBase> robot;
 
 void DetachRobot(int signal) {
-  robot.Disconnect();
-  robot.Terminate();
+  robot->Disconnect();
+  robot->Terminate();
 }
 
 int main(int argc, char **argv) {
@@ -22,8 +24,14 @@ int main(int argc, char **argv) {
 
   std::signal(SIGINT, DetachRobot);
 
+  // check wether controlling scout mini
+  bool is_scout_mini = false;
+  private_node.param<bool>("is_scout_mini", is_scout_mini, false);
+  std::cout << "Working as scout mini: " << is_scout_mini << std::endl;
+
   // instantiate a robot object
-  ScoutROSMessenger messenger(&robot, &node);
+  robot = std::make_shared<ScoutBase>(is_scout_mini);
+  ScoutROSMessenger messenger(robot.get(), &node);
 
   // fetch parameters before connecting to robot
   std::string port_name;
@@ -41,10 +49,10 @@ int main(int argc, char **argv) {
   if (!messenger.simulated_robot_) {
     // connect to robot and setup ROS subscription
     if (port_name.find("can") != std::string::npos) {
-      robot.Connect(port_name);
+      robot->Connect(port_name);
       ROS_INFO("Using CAN bus to talk with the robot");
     } else {
-      robot.Connect(port_name, 115200);
+      robot->Connect(port_name, 115200);
       ROS_INFO("Using UART to talk with the robot");
     }
   }
