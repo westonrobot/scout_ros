@@ -49,20 +49,18 @@ add_message_files(
     FILES
     ScoutActuatorState.msg
     ScoutLightCmd.msg
-    ScoutMotionState.msg
+    ScoutLightState.msg
     ScoutRCState.msg
-    ScoutSystemState.msg
+    ScoutStatus.msg
 )
 
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ScoutCheckLightState.srv
-  ScoutCheckRCState.srv
-  ScoutCheckSystemState.srv
-  ScoutCheckActuatorState.srv
-)
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
