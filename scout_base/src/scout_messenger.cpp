@@ -63,7 +63,7 @@ namespace westonrobot
   {
     if (!simulated_robot_)
     {
-      if (msg->enable_cmd_light_control)
+      if (msg->cmd_ctrl_allowed)
       {
         ScoutLightCmd cmd;
 
@@ -71,57 +71,57 @@ namespace westonrobot
         {
         case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF:
         {
-          cmd.front_mode = ScoutLightCmd::LightMode::CONST_OFF;
+          cmd.front_mode = CONST_OFF;
           break;
         }
         case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON:
         {
-          cmd.front_mode = ScoutLightCmd::LightMode::CONST_ON;
+          cmd.front_mode = CONST_ON;
           break;
         }
         case scout_msgs::ScoutLightCmd::LIGHT_BREATH:
         {
-          cmd.front_mode = ScoutLightCmd::LightMode::BREATH;
+          cmd.front_mode = BREATH;
           break;
         }
         case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM:
         {
-          cmd.front_mode = ScoutLightCmd::LightMode::CUSTOM;
+          cmd.front_mode = CUSTOM;
           cmd.front_custom_value = msg->front_custom_value;
           break;
         }
         }
-
-        switch (msg->rear_mode)
-        {
-        case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF:
-        {
-          cmd.rear_mode = ScoutLightCmd::LightMode::CONST_OFF;
-          break;
-        }
-        case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON:
-        {
-          cmd.rear_mode = ScoutLightCmd::LightMode::CONST_ON;
-          break;
-        }
-        case scout_msgs::ScoutLightCmd::LIGHT_BREATH:
-        {
-          cmd.rear_mode = ScoutLightCmd::LightMode::BREATH;
-          break;
-        }
-        case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM:
-        {
-          cmd.rear_mode = ScoutLightCmd::LightMode::CUSTOM;
-          cmd.rear_custom_value = msg->rear_custom_value;
-          break;
-        }
-        }
-
+        // not meant to be controlled by user for now
+        // switch (msg->rear_mode)
+        // {
+        // case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF:
+        // {
+        //   cmd.rear_mode = CONST_OFF;
+        //   break;
+        // }
+        // case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON:
+        // {
+        //   cmd.rear_mode = CONST_ON;
+        //   break;
+        // }
+        // case scout_msgs::ScoutLightCmd::LIGHT_BREATH:
+        // {
+        //   cmd.rear_mode = BREATH;
+        //   break;
+        // }
+        // case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM:
+        // {
+        //   cmd.rear_mode = CUSTOM;
+        //   cmd.rear_custom_value = msg->rear_custom_value;
+        //   break;
+        // }
+        // }
+        cmd.cmd_ctrl_allowed = true;
         scout_->SetLightCommand(cmd);
       }
       else
       {
-        scout_->DisableLightCmdControl();
+        scout_->DisableLightControl();
       }
     }
     else
@@ -150,32 +150,43 @@ namespace westonrobot
 
     status_msg.header.stamp = current_time_;
 
-    status_msg.linear_velocity = state.linear_velocity;
-    status_msg.angular_velocity = state.angular_velocity;
+    status_msg.linear_velocity = state.motion_state.linear_velocity;
+    status_msg.angular_velocity = state.motion_state.angular_velocity;
 
-    status_msg.base_state = state.base_state;
-    status_msg.control_mode = state.control_mode;
-    status_msg.fault_code = state.fault_code;
-    status_msg.battery_voltage = state.battery_voltage;
+    status_msg.vehicle_state = state.system_state.vehicle_state;
+    status_msg.control_mode = state.system_state.control_mode;
+    status_msg.error_code = state.system_state.error_code;
+    status_msg.battery_voltage = state.system_state.battery_voltage;
 
     for (int i = 0; i < 4; ++i)
     {
-      status_msg.motor_states[i].current = state.motor_states[i].current;
-      status_msg.motor_states[i].rpm = state.motor_states[i].rpm;
-      status_msg.motor_states[i].temperature = state.motor_states[i].temperature;
+      // actuator_hs_state
+      uint8_t motor_id = state.actuator_hs_state[i].motor_id;
+
+      status_msg.actuator_states[motor_id].rpm = state.actuator_hs_state[i].rpm;
+      status_msg.actuator_states[motor_id].current = state.actuator_hs_state[i].current;
+      status_msg.actuator_states[motor_id].pulse_count = state.actuator_hs_state[i].pulse_count;
+      
+      // actuator_ls_state
+      motor_id = state.actuator_ls_state[i].motor_id;
+
+      status_msg.actuator_states[motor_id].driver_voltage = state.actuator_ls_state[i].driver_voltage;
+      status_msg.actuator_states[motor_id].driver_temperature = state.actuator_ls_state[i].driver_temperature;
+      status_msg.actuator_states[motor_id].motor_temperature = state.actuator_ls_state[i].motor_temperature;
+      status_msg.actuator_states[motor_id].driver_state = state.actuator_ls_state[i].driver_state;
     }
 
-    status_msg.light_control_enabled = state.light_control_enabled;
-    status_msg.front_light_state.mode = state.front_light_state.mode;
+    status_msg.light_control_enabled = state.light_state.cmd_ctrl_allowed;
+    status_msg.front_light_state.mode = state.light_state.front_light.mode;
     status_msg.front_light_state.custom_value =
-        state.front_light_state.custom_value;
-    status_msg.rear_light_state.mode = state.rear_light_state.mode;
+        state.light_state.front_light.custom_value;
+    status_msg.rear_light_state.mode = state.light_state.rear_light.mode;
     status_msg.rear_light_state.custom_value =
-        state.front_light_state.custom_value;
+        state.light_state.rear_light.custom_value;
     status_publisher_.publish(status_msg);
 
     // publish odometry and tf
-    PublishOdometryToROS(state.linear_velocity, state.angular_velocity, dt);
+    PublishOdometryToROS(state.motion_state.linear_velocity, state.motion_state.angular_velocity, dt);
 
     // record time for next integration
     last_time_ = current_time_;
@@ -203,9 +214,9 @@ namespace westonrobot
     status_msg.linear_velocity = linear;
     status_msg.angular_velocity = angular;
 
-    status_msg.base_state = 0x00;
+    status_msg.vehicle_state = 0x00;
     status_msg.control_mode = 0x01;
-    status_msg.fault_code = 0x00;
+    status_msg.error_code = 0x00;
     status_msg.battery_voltage = 29.5;
 
     // for (int i = 0; i < 4; ++i)

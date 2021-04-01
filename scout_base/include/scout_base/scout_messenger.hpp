@@ -18,7 +18,7 @@
 #include <tf2_ros/transform_broadcaster.h>
 
 #include "scout_msgs/ScoutLightCmd.h"
-#include "ugv_sdk/scout/scout_base.hpp"
+#include "ugv_sdk/scout_base.hpp"
 
 namespace westonrobot
 {
