@@ -140,20 +140,15 @@ bool CheckSystemState(scout_msgs::ScoutCheckSystemState::Request &req,
 int main(int argc, char **argv) {
   // setup ROS node
   ros::init(argc, argv, "scout_node");
-  ros::NodeHandle node;
-
+  // ros::NodeHandle node;
+  ros::NodeHandle node(""), private_node("~");
   // connect robot device
   std::string device_name;
-  if (argc == 2) {
-    device_name = {argv[1]};
-    ROS_INFO("Specified CAN: %s", device_name.c_str());
-  } else {
-    ROS_INFO("Please specified CAN port name");
-    return -1;
-  }
+  private_node.param<std::string>("port_name", device_name, std::string("can0"));
 
   robot = std::make_shared<ScoutBase>();
   robot->Connect(device_name);
+  robot->EnableCommandedMode();
 
   // publisher
   ros::Publisher state_pub = node.advertise<scout_msgs::ScoutMotionState>(

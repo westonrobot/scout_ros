@@ -8,9 +8,8 @@ project(scout_msgs)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  message_runtime
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
