@@ -8,8 +8,9 @@ project(scout_msgs)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  std_msgs
   message_generation
+  message_runtime
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -47,19 +48,22 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
     FILES
-    ScoutStatus.msg
-    ScoutMotorState.msg
-    ScoutLightState.msg
+    ScoutActuatorState.msg
     ScoutLightCmd.msg
+    ScoutMotionState.msg
+    ScoutRCState.msg
+    ScoutSystemState.msg
 )
 
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  ScoutCheckLightState.srv
+  ScoutCheckRCState.srv
+  ScoutCheckSystemState.srv
+  ScoutCheckActuatorState.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
