@@ -1,5 +1,10 @@
 # ROS Packages for Scout Mobile Robot
 
+**Important Note:** Currently we're transitioning the communication protocol from version 1 to version 2. Please check with Weston Robot or AgileX Robotics to confirm which version your robot is using. 
+
+* V1 Protocol: master branch of scout_ros and ugv_sdk
+* V2 Protocol: v2.x branch of scout_ros and ugv_sdk
+
 ## Packages
 
 This repository contains minimal packages to control the scout robot using ROS. 
@@ -40,7 +45,6 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 1. Install dependent libraries
 
     ```
-    $ sudo apt install -y libasio-dev
     $ sudo apt install -y ros-$ROS_DISTRO-teleop-twist-keyboard
     ```
 
@@ -50,8 +54,8 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 
     ```
     $ cd ~/catkin_ws/src
-    $ git clone -b v2.x https://github.com/westonrobot/ugv_sdk.git
     $ git clone https://github.com/westonrobot/async_port.git
+    $ git clone -b v2.x https://github.com/westonrobot/ugv_sdk.git
     $ git clone -b v2.x https://github.com/westonrobot/scout_ros.git
     $ cd ..
     $ catkin_make
@@ -71,15 +75,6 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
     - simulated_robot: indicates if launching with a simulation, default = "false"
     - model_xacro: specifies the target ".xacro" file for the publishing of tf frames, default = [scout_v2.xacro](scout_base/description/scout_v2.xacro)
     - odom_topic_name: sets the name of the topic which calculated odometry is published to, defaults = "odom"
-
-    or (if you're using a serial port)
-        
-    ```
-    $ roslaunch scout_bringup scout_minimal_uart.launch
-    ```
-
-    - Similarly, the [scout_bringup_uart.launch](scout_bringup/launch/scout_minimal_uart.launch) has the same 4 parameters with port_name default = "/dev/ttyUSB0".
-
 
 * Start the keyboard tele-op node
 
