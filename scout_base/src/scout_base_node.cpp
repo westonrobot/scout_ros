@@ -11,11 +11,16 @@
 using namespace westonrobot;
 
 std::shared_ptr<ScoutBase> robot;
+bool keep_run = true;
+
+void DetachRobot(int signal) { keep_run = false; }
 
 int main(int argc, char **argv) {
   // setup ROS node
   ros::init(argc, argv, "scout_node");
   ros::NodeHandle node(""), private_node("~");
+
+  std::signal(SIGINT, DetachRobot);
 
   // instantiate a robot object
   robot = std::make_shared<ScoutBase>();
@@ -46,7 +51,7 @@ int main(int argc, char **argv) {
 
   // publish robot state at 50Hz while listening to twist commands
   ros::Rate rate(50);
-  while (true) {
+  while (keep_run) {
     if (!messenger.simulated_robot_) {
       messenger.PublishStateToROS();
     } else {
