@@ -1,16 +1,17 @@
 #include <memory>
+#include <csignal>
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/JointState.h>
 #include <tf/transform_broadcaster.h>
 
-#include "ugv_sdk/scout_base.hpp"
+#include "ugv_sdk/mobile_robot/scout_robot.hpp"
 #include "scout_base/scout_messenger.hpp"
 
 using namespace westonrobot;
 
-std::shared_ptr<ScoutBase> robot;
+std::shared_ptr<ScoutRobot> robot;
 bool keep_run = true;
 
 void DetachRobot(int signal) { keep_run = false; }
@@ -23,8 +24,8 @@ int main(int argc, char **argv) {
   std::signal(SIGINT, DetachRobot);
 
   // instantiate a robot object
-  robot = std::make_shared<ScoutBase>();
-  ScoutROSMessenger messenger(robot.get(), &node);
+  robot = std::make_shared<ScoutRobot>();
+  ScoutROSMessenger messenger(robot, &node);
 
   // fetch parameters before connecting to robot
   std::string port_name;
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
       robot->Connect(port_name);
       robot->EnableCommandedMode();
       ROS_INFO("Using CAN bus to talk with the robot");
-    } 
+    }
   }
   messenger.SetupSubscription();
 
