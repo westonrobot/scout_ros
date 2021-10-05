@@ -13,18 +13,12 @@
 
 using namespace westonrobot;
 
-std::shared_ptr<ScoutRobot> robot;
-std::unique_ptr<ScoutMessenger> messenger;
-bool keep_run = true;
-
-void DetachRobot(int signal) { messenger->Stop(); }
-
 int main(int argc, char **argv) {
   // setup ROS node
   ros::init(argc, argv, "scout_node");
   ros::NodeHandle node(""), private_node("~");
 
-  std::signal(SIGINT, DetachRobot);
+  //   std::signal(SIGINT, DetachRobot);
 
   // fetch parameters before connecting to robot
   std::string port_name;
@@ -52,6 +46,9 @@ int main(int argc, char **argv) {
     ROS_INFO("Robot base: Scout");
   }
 
+  std::shared_ptr<ScoutRobot> robot;
+  std::unique_ptr<ScoutMessenger<ScoutRobot>> messenger;
+
   // instantiate a robot object
   ProtocolDectctor detector;
   if (detector.Connect(port_name)) {
@@ -73,7 +70,8 @@ int main(int argc, char **argv) {
   }
 
   // instantiate a ROS messenger
-  messenger = std::unique_ptr<ScoutMessenger>(new ScoutMessenger(robot, &node));
+  messenger = std::unique_ptr<ScoutMessenger<ScoutRobot>>(
+      new ScoutMessenger<ScoutRobot>(robot, &node));
 
   messenger->SetOdometryFrame(odom_frame);
   messenger->SetBaseFrame(base_frame);

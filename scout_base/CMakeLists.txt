@@ -37,15 +37,10 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
     include
-    ${catkin_INCLUDE_DIRS}
-)
-
-add_library(scout_messenger STATIC src/scout_messenger.cpp)
-target_link_libraries(scout_messenger ${catkin_LIBRARIES})
-add_dependencies(scout_messenger ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+    ${catkin_INCLUDE_DIRS})
 
 add_executable(scout_base_node src/scout_base_node.cpp)
-target_link_libraries(scout_base_node scout_messenger ${catkin_LIBRARIES})
+target_link_libraries(scout_base_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##

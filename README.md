@@ -1,10 +1,5 @@
 # ROS Packages for Scout Mobile Robot
 
-**Important Note:** Currently we're transitioning the communication protocol from version 1 to version 2. Please check with Weston Robot or AgileX Robotics to confirm which version your robot is using. 
-
-* V1 Protocol: master branch of scout_ros and ugv_sdk
-* V2 Protocol: v2.x branch of scout_ros and ugv_sdk
-
 ## Packages
 
 This repository contains minimal packages to control the scout robot using ROS. 
@@ -54,14 +49,13 @@ Nvidia Jeston TX2/Xavier/XavierNX have CAN controller(s) integrated in the main 
 
     ```
     $ cd ~/catkin_ws/src
-    $ git clone https://github.com/westonrobot/async_port.git
-    $ git clone -b v2.x https://github.com/westonrobot/ugv_sdk.git
-    $ git clone -b v2.x https://github.com/westonrobot/scout_ros.git
+    $ git clone https://github.com/westonrobot/ugv_sdk.git
+    $ git clone https://github.com/westonrobot/scout_ros.git
     $ cd ..
     $ catkin_make
     ```
 
-4. Launch ROS nodes
+3. Launch ROS nodes
  
 * Start the base node for the real robot
 
