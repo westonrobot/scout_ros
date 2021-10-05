@@ -15,11 +15,11 @@
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
-// #include <tf/transform_broadcaster.h>
 #include <tf2_ros/transform_broadcaster.h>
 
 #include "scout_msgs/ScoutStatus.h"
 #include "scout_msgs/ScoutLightCmd.h"
+
 #include "ugv_sdk/mobile_robot/scout_robot.hpp"
 
 namespace westonrobot {
@@ -71,9 +71,6 @@ class ScoutMessenger {
   tf2_ros::TransformBroadcaster tf_broadcaster_;
 
   // speed variables
-  double linear_speed_ = 0.0;
-  double angular_speed_ = 0.0;
-
   double position_x_ = 0.0;
   double position_y_ = 0.0;
   double theta_ = 0.0;
@@ -95,12 +92,28 @@ class ScoutMessenger {
 
   void TwistCmdCallback(const geometry_msgs::Twist::ConstPtr &msg) {
     if (!simulated_robot_) {
-      scout_->SetMotionCommand(msg->linear.x, msg->angular.z);
+      SetScoutMotionCommand(scout_, msg);
     } else {
       std::lock_guard<std::mutex> guard(twist_mutex_);
       current_twist_ = *msg.get();
     }
     ROS_INFO("Cmd received:%f, %f", msg->linear.x, msg->angular.z);
+  }
+
+  template <typename T,
+            std::enable_if_t<!std::is_base_of<ScoutMiniOmniRobot, T>::value,
+                             bool> = true>
+  void SetScoutMotionCommand(std::shared_ptr<T> base,
+                             const geometry_msgs::Twist::ConstPtr &msg) {
+    base->SetMotionCommand(msg->linear.x, msg->angular.z);
+  }
+
+  template <typename T,
+            std::enable_if_t<std::is_base_of<ScoutMiniOmniRobot, T>::value,
+                             bool> = true>
+  void SetScoutMotionCommand(std::shared_ptr<T> base,
+                             const geometry_msgs::Twist::ConstPtr &msg) {
+    base->SetMotionCommand(msg->linear.x, msg->angular.z, msg->linear.y);
   }
 
   void LightCmdCallback(const scout_msgs::ScoutLightCmd::ConstPtr &msg) {
@@ -162,14 +175,21 @@ class ScoutMessenger {
     }
   }
 
-  void PublishOdometryToROS(double linear, double angular, double dt) {
+  void PublishOdometryToROS(const MotionStateMessage &msg, double dt) {
     // perform numerical integration to get an estimation of pose
-    linear_speed_ = linear;
-    angular_speed_ = angular;
+    double linear_speed = msg.linear_velocity;
+    double angular_speed = msg.angular_velocity;
+    double lateral_speed = 0;
 
-    double d_x = linear_speed_ * std::cos(theta_) * dt;
-    double d_y = linear_speed_ * std::sin(theta_) * dt;
-    double d_theta = angular_speed_ * dt;
+    if (std::is_base_of<ScoutMiniOmniRobot, ScoutType>::value) {
+      lateral_speed = msg.lateral_velocity;
+    } else {
+      lateral_speed = 0;
+    }
+
+    double d_x = linear_speed * std::cos(theta_) * dt;
+    double d_y = (linear_speed * std::sin(theta_) + lateral_speed) * dt;
+    double d_theta = angular_speed * dt;
 
     position_x_ += d_x;
     position_y_ += d_y;
@@ -202,9 +222,9 @@ class ScoutMessenger {
     odom_msg.pose.pose.position.z = 0.0;
     odom_msg.pose.pose.orientation = odom_quat;
 
-    odom_msg.twist.twist.linear.x = linear_speed_;
-    odom_msg.twist.twist.linear.y = 0.0;
-    odom_msg.twist.twist.angular.z = angular_speed_;
+    odom_msg.twist.twist.linear.x = linear_speed;
+    odom_msg.twist.twist.linear.y = lateral_speed;
+    odom_msg.twist.twist.angular.z = angular_speed;
 
     odom_pub_.publish(odom_msg);
   }
@@ -271,64 +291,11 @@ class ScoutMessenger {
     status_pub_.publish(status_msg);
 
     // publish odometry and tf
-    PublishOdometryToROS(state.motion_state.linear_velocity,
-                         state.motion_state.angular_velocity, dt);
+    PublishOdometryToROS(state.motion_state, dt);
 
     // record time for next integration
     last_time_ = current_time_;
   }
-
-  void PublishSimStateToROS(double linear, double angular) {
-    current_time_ = ros::Time::now();
-
-    double dt = (current_time_ - last_time_).toSec();
-
-    static bool init_run = true;
-    if (init_run) {
-      last_time_ = current_time_;
-      init_run = false;
-      return;
-    }
-
-    // publish scout state message
-    scout_msgs::ScoutStatus status_msg;
-
-    status_msg.header.stamp = current_time_;
-
-    status_msg.linear_velocity = linear;
-    status_msg.angular_velocity = angular;
-
-    status_msg.vehicle_state = 0x00;
-    status_msg.control_mode = 0x01;
-    status_msg.error_code = 0x00;
-    status_msg.battery_voltage = 29.5;
-
-    // for (int i = 0; i < 4; ++i)
-    // {
-    //     status_msg.motor_states[i].current = state.motor_states[i].current;
-    //     status_msg.motor_states[i].rpm = state.motor_states[i].rpm;
-    //     status_msg.motor_states[i].temperature =
-    //     state.motor_states[i].temperature;
-    // }
-
-    status_msg.light_control_enabled = false;
-    // status_msg.front_light_state.mode = state.front_light_state.mode;
-    // status_msg.front_light_state.custom_value =
-    // state.front_light_state.custom_value; status_msg.rear_light_state.mode =
-    // state.rear_light_state.mode; status_msg.rear_light_state.custom_value =
-    // state.front_light_state.custom_value;
-
-    status_pub_.publish(status_msg);
-
-    // publish odometry and tf
-    PublishOdometryToROS(linear, angular, dt);
-
-    // record time for next integration
-    last_time_ = current_time_;
-  }
-
-  //   void PublishSimStateToROS(double linear, double angular);
-  //   void GetCurrentMotionCmdForSim(double &linear, double &angular);
 };
 }  // namespace westonrobot
 

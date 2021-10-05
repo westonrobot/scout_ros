@@ -11,7 +11,7 @@
     -->
     <arg name="port_name" default="can0" />
     <arg name="is_scout_mini" default="true" />
-    <arg name="is_omni_wheel" default="true" />
+    <arg name="is_omni_wheel" default="true" />    
     <arg name="simulated_robot" default="false" />
     <arg name="odom_topic_name" default="odom" />
 
