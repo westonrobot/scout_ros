@@ -14,27 +14,56 @@
 #include "scout_msgs/ScoutStatus.h"
 
 namespace westonrobot {
-ScoutROSMessenger::ScoutROSMessenger(ros::NodeHandle *nh)
+ScoutMessenger::ScoutMessenger(ros::NodeHandle *nh)
     : scout_(nullptr), nh_(nh) {}
 
-ScoutROSMessenger::ScoutROSMessenger(std::shared_ptr<ScoutRobot> scout,
-                                     ros::NodeHandle *nh)
+ScoutMessenger::ScoutMessenger(std::shared_ptr<ScoutRobot> scout,
+                               ros::NodeHandle *nh)
     : scout_(scout), nh_(nh) {}
 
-void ScoutROSMessenger::SetupSubscription() {
-  // odometry publisher
-  odom_publisher_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
-  status_publisher_ =
-      nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
-
-  // cmd subscriber
-  motion_cmd_subscriber_ = nh_->subscribe<geometry_msgs::Twist>(
-      "/cmd_vel", 5, &ScoutROSMessenger::TwistCmdCallback, this);
-  light_cmd_subscriber_ = nh_->subscribe<scout_msgs::ScoutLightCmd>(
-      "/scout_light_control", 5, &ScoutROSMessenger::LightCmdCallback, this);
+void ScoutMessenger::SetOdometryFrame(std::string frame) {
+  odom_frame_ = frame;
 }
 
-void ScoutROSMessenger::TwistCmdCallback(
+void ScoutMessenger::SetBaseFrame(std::string frame) { base_frame_ = frame; }
+
+void ScoutMessenger::SetOdometryTopicName(std::string name) {
+  odom_topic_name_ = name;
+}
+
+void ScoutMessenger::SetSimulationMode(int loop_rate) {
+  simulated_robot_ = true;
+  sim_control_rate_ = loop_rate;
+}
+
+void ScoutMessenger::SetupSubscription() {
+  // odometry publisher
+  odom_pub_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
+  status_pub_ = nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
+
+  // cmd subscriber
+  motion_cmd_sub_ = nh_->subscribe<geometry_msgs::Twist>(
+      "/cmd_vel", 5, &ScoutMessenger::TwistCmdCallback, this);
+  light_cmd_sub_ = nh_->subscribe<scout_msgs::ScoutLightCmd>(
+      "/scout_light_control", 5, &ScoutMessenger::LightCmdCallback, this);
+}
+
+void ScoutMessenger::Run() {
+  SetupSubscription();
+
+  // publish robot state at 50Hz while listening to twist commands
+  keep_running_ = true;
+  ros::Rate rate(50);
+  while (keep_running_) {
+    PublishStateToROS();
+    ros::spinOnce();
+    rate.sleep();
+  }
+}
+
+void ScoutMessenger::Stop() { keep_running_ = false; }
+
+void ScoutMessenger::TwistCmdCallback(
     const geometry_msgs::Twist::ConstPtr &msg) {
   if (!simulated_robot_) {
     scout_->SetMotionCommand(msg->linear.x, msg->angular.z);
@@ -42,17 +71,17 @@ void ScoutROSMessenger::TwistCmdCallback(
     std::lock_guard<std::mutex> guard(twist_mutex_);
     current_twist_ = *msg.get();
   }
-  // ROS_INFO("cmd received:%f, %f", msg->linear.x, msg->angular.z);
+  ROS_INFO("Cmd received:%f, %f", msg->linear.x, msg->angular.z);
 }
 
-void ScoutROSMessenger::GetCurrentMotionCmdForSim(double &linear,
-                                                  double &angular) {
+void ScoutMessenger::GetCurrentMotionCmdForSim(double &linear,
+                                               double &angular) {
   std::lock_guard<std::mutex> guard(twist_mutex_);
   linear = current_twist_.linear.x;
   angular = current_twist_.angular.z;
 }
 
-void ScoutROSMessenger::LightCmdCallback(
+void ScoutMessenger::LightCmdCallback(
     const scout_msgs::ScoutLightCmd::ConstPtr &msg) {
   if (!simulated_robot_) {
     // if (msg->cmd_ctrl_allowed) {
@@ -112,7 +141,7 @@ void ScoutROSMessenger::LightCmdCallback(
   }
 }
 
-void ScoutROSMessenger::PublishStateToROS() {
+void ScoutMessenger::PublishStateToROS() {
   current_time_ = ros::Time::now();
   double dt = (current_time_ - last_time_).toSec();
 
@@ -171,7 +200,7 @@ void ScoutROSMessenger::PublishStateToROS() {
   status_msg.rear_light_state.mode = state.light_state.rear_light.mode;
   status_msg.rear_light_state.custom_value =
       state.light_state.rear_light.custom_value;
-  status_publisher_.publish(status_msg);
+  status_pub_.publish(status_msg);
 
   // publish odometry and tf
   PublishOdometryToROS(state.motion_state.linear_velocity,
@@ -181,7 +210,7 @@ void ScoutROSMessenger::PublishStateToROS() {
   last_time_ = current_time_;
 }
 
-void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular) {
+void ScoutMessenger::PublishSimStateToROS(double linear, double angular) {
   current_time_ = ros::Time::now();
 
   double dt = (current_time_ - last_time_).toSec();
@@ -221,7 +250,7 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular) {
   // state.rear_light_state.mode; status_msg.rear_light_state.custom_value =
   // state.front_light_state.custom_value;
 
-  status_publisher_.publish(status_msg);
+  status_pub_.publish(status_msg);
 
   // publish odometry and tf
   PublishOdometryToROS(linear, angular, dt);
@@ -230,8 +259,8 @@ void ScoutROSMessenger::PublishSimStateToROS(double linear, double angular) {
   last_time_ = current_time_;
 }
 
-void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular,
-                                             double dt) {
+void ScoutMessenger::PublishOdometryToROS(double linear, double angular,
+                                          double dt) {
   // perform numerical integration to get an estimation of pose
   linear_speed_ = linear;
   angular_speed_ = angular;
@@ -274,6 +303,6 @@ void ScoutROSMessenger::PublishOdometryToROS(double linear, double angular,
   odom_msg.twist.twist.linear.y = 0.0;
   odom_msg.twist.twist.angular.z = angular_speed_;
 
-  odom_publisher_.publish(odom_msg);
+  odom_pub_.publish(odom_msg);
 }
 }  // namespace westonrobot

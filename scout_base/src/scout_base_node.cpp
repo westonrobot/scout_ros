@@ -7,14 +7,17 @@
 #include <tf/transform_broadcaster.h>
 
 #include "ugv_sdk/mobile_robot/scout_robot.hpp"
+#include "ugv_sdk/utilities/protocol_detector.hpp"
+
 #include "scout_base/scout_messenger.hpp"
 
 using namespace westonrobot;
 
 std::shared_ptr<ScoutRobot> robot;
+std::unique_ptr<ScoutMessenger> messenger;
 bool keep_run = true;
 
-void DetachRobot(int signal) { keep_run = false; }
+void DetachRobot(int signal) { messenger->Stop(); }
 
 int main(int argc, char **argv) {
   // setup ROS node
@@ -23,46 +26,72 @@ int main(int argc, char **argv) {
 
   std::signal(SIGINT, DetachRobot);
 
-  // instantiate a robot object
-  robot = std::make_shared<ScoutRobot>();
-  ScoutROSMessenger messenger(robot, &node);
-
   // fetch parameters before connecting to robot
   std::string port_name;
-  private_node.param<std::string>("port_name", port_name, std::string("can0"));
-  private_node.param<std::string>("odom_frame", messenger.odom_frame_,
-                                  std::string("odom"));
-  private_node.param<std::string>("base_frame", messenger.base_frame_,
-                                  std::string("base_link"));
-  private_node.param<bool>("simulated_robot", messenger.simulated_robot_,
-                           false);
-  private_node.param<int>("control_rate", messenger.sim_control_rate_, 50);
-  private_node.param<std::string>("odom_topic_name", messenger.odom_topic_name_,
-                                  std::string("odom"));
+  std::string odom_frame;
+  std::string base_frame;
+  std::string odom_topic_name;
+  bool is_simulated = false;
+  int sim_rate = 50;
+  bool is_scout_mini = false;
 
-  if (!messenger.simulated_robot_) {
-    // connect to robot and setup ROS subscription
-    if (port_name.find("can") != std::string::npos) {
-      robot->Connect(port_name);
+  private_node.param<std::string>("port_name", port_name, std::string("can0"));
+  private_node.param<std::string>("odom_frame", odom_frame,
+                                  std::string("odom"));
+  private_node.param<std::string>("base_frame", base_frame,
+                                  std::string("base_link"));
+  private_node.param<bool>("simulated_robot", is_simulated, false);
+  private_node.param<int>("control_rate", sim_rate, 50);
+  private_node.param<std::string>("odom_topic_name", odom_topic_name,
+                                  std::string("odom"));
+  private_node.param<bool>("is_scout_mini", is_scout_mini, false);
+
+  if (is_scout_mini) {
+    ROS_INFO("Robot base: Scout Mini");
+  } else {
+    ROS_INFO("Robot base: Scout");
+  }
+
+  // instantiate a robot object
+  ProtocolDectctor detector;
+  if (detector.Connect(port_name)) {
+    auto proto = detector.DetectProtocolVersion(5);
+    if (proto == ProtocolVersion::AGX_V1) {
+      std::cout << "Detected protocol: AGX_V1" << std::endl;
+      robot =
+          std::make_shared<ScoutRobot>(ProtocolVersion::AGX_V1, is_scout_mini);
+    } else if (proto == ProtocolVersion::AGX_V2) {
+      std::cout << "Detected protocol: AGX_V2" << std::endl;
+      robot =
+          std::make_shared<ScoutRobot>(ProtocolVersion::AGX_V2, is_scout_mini);
+    } else {
+      std::cout << "Detected protocol: UNKONWN" << std::endl;
+      return -1;
+    }
+  } else {
+    return -1;
+  }
+
+  // instantiate a ROS messenger
+  messenger = std::unique_ptr<ScoutMessenger>(new ScoutMessenger(robot, &node));
+
+  messenger->SetOdometryFrame(odom_frame);
+  messenger->SetBaseFrame(base_frame);
+  messenger->SetOdometryTopicName(odom_topic_name);
+  if (is_simulated) messenger->SetSimulationMode(sim_rate);
+
+  // connect to robot and setup ROS subscription
+  if (port_name.find("can") != std::string::npos) {
+    if (robot->Connect(port_name)) {
       robot->EnableCommandedMode();
       ROS_INFO("Using CAN bus to talk with the robot");
-    }
-  }
-  messenger.SetupSubscription();
-
-  // publish robot state at 50Hz while listening to twist commands
-  ros::Rate rate(50);
-  while (keep_run) {
-    if (!messenger.simulated_robot_) {
-      messenger.PublishStateToROS();
     } else {
-      double linear, angular;
-      messenger.GetCurrentMotionCmdForSim(linear, angular);
-      messenger.PublishSimStateToROS(linear, angular);
+      ROS_INFO("Failed to connect to the robot CAN bus");
+      return -1;
     }
-    ros::spinOnce();
-    rate.sleep();
   }
+
+  messenger->Run();
 
   return 0;
 }
