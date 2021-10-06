@@ -118,58 +118,33 @@ class ScoutMessenger {
 
   void LightCmdCallback(const scout_msgs::ScoutLightCmd::ConstPtr &msg) {
     if (!simulated_robot_) {
-      // if (msg->cmd_ctrl_allowed) {
-      //   ScoutLightCmd cmd;
+      if (msg->cmd_ctrl_allowed) {
+        AgxLightMode f_mode;
+        uint8_t f_value;
 
-      //   switch (msg->front_mode) {
-      //     case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF: {
-      //       cmd.front_mode = CONST_OFF;
-      //       break;
-      //     }
-      //     case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON: {
-      //       cmd.front_mode = CONST_ON;
-      //       break;
-      //     }
-      //     case scout_msgs::ScoutLightCmd::LIGHT_BREATH: {
-      //       cmd.front_mode = BREATH;
-      //       break;
-      //     }
-      //     case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM: {
-      //       cmd.front_mode = CUSTOM;
-      //       cmd.front_custom_value = msg->front_custom_value;
-      //       break;
-      //     }
-      //   }
-      //   // not meant to be controlled by user for now
-      //   // switch (msg->rear_mode)
-      //   // {
-      //   // case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF:
-      //   // {
-      //   //   cmd.rear_mode = CONST_OFF;
-      //   //   break;
-      //   // }
-      //   // case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON:
-      //   // {
-      //   //   cmd.rear_mode = CONST_ON;
-      //   //   break;
-      //   // }
-      //   // case scout_msgs::ScoutLightCmd::LIGHT_BREATH:
-      //   // {
-      //   //   cmd.rear_mode = BREATH;
-      //   //   break;
-      //   // }
-      //   // case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM:
-      //   // {
-      //   //   cmd.rear_mode = CUSTOM;
-      //   //   cmd.rear_custom_value = msg->rear_custom_value;
-      //   //   break;
-      //   // }
-      //   // }
-      //   cmd.cmd_ctrl_allowed = true;
-      //   scout_->SetLightCommand(cmd);
-      // } else {
-      //   scout_->DisableLightControl();
-      // }
+        switch (msg->front_mode) {
+          case scout_msgs::ScoutLightCmd::LIGHT_CONST_OFF: {
+            f_mode = AgxLightMode::CONST_OFF;
+            break;
+          }
+          case scout_msgs::ScoutLightCmd::LIGHT_CONST_ON: {
+            f_mode = AgxLightMode::CONST_ON;
+            break;
+          }
+          case scout_msgs::ScoutLightCmd::LIGHT_BREATH: {
+            f_mode = AgxLightMode::BREATH;
+            break;
+          }
+          case scout_msgs::ScoutLightCmd::LIGHT_CUSTOM: {
+            f_mode = AgxLightMode::CUSTOM;
+            f_value = msg->front_custom_value;
+            break;
+          }
+        }
+        scout_->SetLightCommand(f_mode, f_value, AgxLightMode::CONST_ON, 0);
+      } else {
+        scout_->DisableLightControl();
+      }
     } else {
       std::cout << "simulated robot received light control cmd" << std::endl;
     }
