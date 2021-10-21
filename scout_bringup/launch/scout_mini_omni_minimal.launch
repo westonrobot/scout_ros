@@ -1,13 +1,14 @@
 <launch>
 
     <arg name="port_name" value="can0" />
-    <arg name="is_scout_mini" default="false" />
-    <arg name="is_omni_wheel" default="false" />
+    <arg name="is_scout_mini" default="true" />
+    <arg name="is_omni_wheel" default="true" />
     <arg name="simulated_robot" value="false" />
-    <arg name="model_xacro" default="$(find scout_description)/urdf/scout_v2.xacro" />
+    <arg name="model_xacro" default="$(find scout_description)/urdf/scout_mini_v2.xacro" />
+    <!-- <arg name="model_xacro" default="$(find scout_description)/urdf/scout_mini_omni_v2.xacro" /> -->
     <arg name="odom_topic_name" default="odom" />
 
-    <include file="$(find scout_base)/launch/scout_base.launch">
+    <include file="$(find scout_base)/launch/scout_mini_omni_base.launch">
         <arg name="port_name" default="$(arg port_name)" />
         <arg name="is_scout_mini" default="$(arg is_scout_mini)" />
         <arg name="is_omni_wheel" default="$(arg is_omni_wheel)" />
