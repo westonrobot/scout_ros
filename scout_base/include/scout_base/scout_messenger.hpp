@@ -94,7 +94,7 @@ class ScoutMessenger {
 
   void TwistCmdCallback(const geometry_msgs::Twist::ConstPtr &msg) {
     SetScoutMotionCommand(scout_, msg);
-    ROS_INFO("Cmd received:%f, %f", msg->linear.x, msg->angular.z);
+    ROS_INFO("Cmd received:%f, %f\n", msg->linear.x, msg->angular.z);
   }
 
   template <typename T,
@@ -148,6 +148,8 @@ class ScoutMessenger {
   }
 
   void PublishOdometryToROS(const MotionStateMessage &msg, double dt) {
+      auto ctime = ros::Time::now();
+
     // perform numerical integration to get an estimation of pose
     double linear_speed = msg.linear_velocity;
     double angular_speed = msg.angular_velocity;
@@ -172,7 +174,7 @@ class ScoutMessenger {
 
     // publish tf transformation
     geometry_msgs::TransformStamped tf_msg;
-    tf_msg.header.stamp = current_time_;
+    tf_msg.header.stamp = ctime;
     tf_msg.header.frame_id = odom_frame_;
     tf_msg.child_frame_id = base_frame_;
 
@@ -185,7 +187,7 @@ class ScoutMessenger {
 
     // publish odometry and tf messages
     nav_msgs::Odometry odom_msg;
-    odom_msg.header.stamp = current_time_;
+    odom_msg.header.stamp = ctime;
     odom_msg.header.frame_id = odom_frame_;
     odom_msg.child_frame_id = base_frame_;
 
