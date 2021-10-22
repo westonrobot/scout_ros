@@ -15,6 +15,7 @@
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
+#include <tf/transform_datatypes.h>
 #include <tf2_ros/transform_broadcaster.h>
 
 #include "scout_msgs/ScoutStatus.h"
@@ -33,9 +34,18 @@ class ScoutMessenger {
   void SetBaseFrame(std::string frame) { base_frame_ = frame; }
   void SetOdometryTopicName(std::string name) { odom_topic_name_ = name; }
 
-  void SetSimulationMode(int loop_rate) {
-    simulated_robot_ = true;
-    sim_control_rate_ = loop_rate;
+  void SetSimulationMode() { simulated_robot_ = true; }
+
+  void SetupSubscription() {
+    // odometry publisher
+    odom_pub_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
+    status_pub_ = nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
+
+    // cmd subscriber
+    motion_cmd_sub_ = nh_->subscribe<geometry_msgs::Twist>(
+        "/cmd_vel", 5, &ScoutMessenger::TwistCmdCallback, this);
+    light_cmd_sub_ = nh_->subscribe<scout_msgs::ScoutLightCmd>(
+        "/scout_light_control", 5, &ScoutMessenger::LightCmdCallback, this);
   }
 
   void Run() {
@@ -50,6 +60,11 @@ class ScoutMessenger {
     }
   }
 
+  void Update() {
+    PublishStateToROS();
+    ros::spinOnce();
+  }
+
  private:
   std::shared_ptr<ScoutType> scout_;
   ros::NodeHandle *nh_;
@@ -59,7 +74,6 @@ class ScoutMessenger {
   std::string odom_topic_name_;
 
   bool simulated_robot_ = false;
-  int sim_control_rate_ = 50;
 
   std::mutex twist_mutex_;
   geometry_msgs::Twist current_twist_;
@@ -78,25 +92,8 @@ class ScoutMessenger {
   ros::Time last_time_;
   ros::Time current_time_;
 
-  void SetupSubscription() {
-    // odometry publisher
-    odom_pub_ = nh_->advertise<nav_msgs::Odometry>(odom_topic_name_, 50);
-    status_pub_ = nh_->advertise<scout_msgs::ScoutStatus>("/scout_status", 10);
-
-    // cmd subscriber
-    motion_cmd_sub_ = nh_->subscribe<geometry_msgs::Twist>(
-        "/cmd_vel", 5, &ScoutMessenger::TwistCmdCallback, this);
-    light_cmd_sub_ = nh_->subscribe<scout_msgs::ScoutLightCmd>(
-        "/scout_light_control", 5, &ScoutMessenger::LightCmdCallback, this);
-  }
-
   void TwistCmdCallback(const geometry_msgs::Twist::ConstPtr &msg) {
-    if (!simulated_robot_) {
-      SetScoutMotionCommand(scout_, msg);
-    } else {
-      std::lock_guard<std::mutex> guard(twist_mutex_);
-      current_twist_ = *msg.get();
-    }
+    SetScoutMotionCommand(scout_, msg);
     ROS_INFO("Cmd received:%f, %f", msg->linear.x, msg->angular.z);
   }
 

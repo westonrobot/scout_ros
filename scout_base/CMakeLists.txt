@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
     sensor_msgs
     std_msgs
     geometry_msgs
+    tf
     tf2 
     tf2_ros
     ugv_sdk
@@ -25,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES scout_messenger
-  CATKIN_DEPENDS ugv_sdk scout_msgs
+  CATKIN_DEPENDS ugv_sdk scout_msgs tf tf2 tf2_ros
 #   DEPENDS Boost
 )
 
@@ -39,8 +40,13 @@ include_directories(
     include
     ${catkin_INCLUDE_DIRS})
 
+add_library(scout_messenger INTERFACE)
+target_include_directories(scout_messenger INTERFACE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
 add_executable(scout_base_node src/scout_base_node.cpp)
-target_link_libraries(scout_base_node ${catkin_LIBRARIES})
+target_link_libraries(scout_base_node scout_messenger ${catkin_LIBRARIES})
 
 #############
 ## Install ##

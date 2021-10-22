@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     messenger->SetOdometryFrame(odom_frame);
     messenger->SetBaseFrame(base_frame);
     messenger->SetOdometryTopicName(odom_topic_name);
-    if (is_simulated) messenger->SetSimulationMode(sim_rate);
+    if (is_simulated) messenger->SetSimulationMode();
 
     // connect to robot and setup ROS subscription
     if (port_name.find("can") != std::string::npos) {
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
     messenger->SetOdometryFrame(odom_frame);
     messenger->SetBaseFrame(base_frame);
     messenger->SetOdometryTopicName(odom_topic_name);
-    if (is_simulated) messenger->SetSimulationMode(sim_rate);
+    if (is_simulated) messenger->SetSimulationMode();
 
     // connect to robot and setup ROS subscription
     if (port_name.find("can") != std::string::npos) {
