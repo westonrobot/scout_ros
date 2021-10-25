@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="scout_mini_v2" 
+<robot name="scout_mini" 
     xmlns:xacro="http://ros.org/wiki/xacro">
 
     <xacro:arg name="robot_namespace" default="/" /> 
