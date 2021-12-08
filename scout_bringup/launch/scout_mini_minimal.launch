@@ -4,7 +4,7 @@
     <arg name="is_scout_mini" default="true" />
     <arg name="is_omni_wheel" default="false" />
     <arg name="simulated_robot" value="false" />
-    <arg name="model_xacro" default="$(find scout_description)/urdf/scout_mini_v2.xacro" />
+    <arg name="model_xacro" default="$(find scout_description)/urdf/scout_mini.xacro" />
     <arg name="odom_topic_name" default="odom" />
 
     <include file="$(find scout_base)/launch/scout_mini_base.launch">
