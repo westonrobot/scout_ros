@@ -47,6 +47,7 @@ target_include_directories(scout_messenger INTERFACE
 
 add_executable(scout_base_node src/scout_base_node.cpp)
 target_link_libraries(scout_base_node scout_messenger ${catkin_LIBRARIES})
+target_compile_definitions(scout_base_node PUBLIC ASIO_ENABLE_OLD_SERVICES)
 
 #############
 ## Install ##
