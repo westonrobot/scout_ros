@@ -148,7 +148,7 @@ class ScoutMessenger {
   }
 
   void PublishOdometryToROS(const MotionStateMessage &msg, double dt) {
-      auto ctime = ros::Time::now();
+    auto ctime = ros::Time::now();
 
     // perform numerical integration to get an estimation of pose
     double linear_speed = msg.linear_velocity;
@@ -161,8 +161,12 @@ class ScoutMessenger {
       lateral_speed = 0;
     }
 
-    double d_x = (linear_speed * std::cos(theta_) - lateral_speed * std::sin(theta_)) * dt;
-    double d_y = (linear_speed * std::sin(theta_) + lateral_speed * std::cos(theta_)) * dt;
+    double d_x =
+        (linear_speed * std::cos(theta_) - lateral_speed * std::sin(theta_)) *
+        dt;
+    double d_y =
+        (linear_speed * std::sin(theta_) + lateral_speed * std::cos(theta_)) *
+        dt;
     double d_theta = angular_speed * dt;
 
     position_x_ += d_x;
@@ -235,6 +239,7 @@ class ScoutMessenger {
       // actuator_hs_state
       uint8_t motor_id = actuator.actuator_hs_state[i].motor_id;
 
+      status_msg.actuator_states[motor_id].motor_id = motor_id;
       status_msg.actuator_states[motor_id].rpm =
           actuator.actuator_hs_state[i].rpm;
       status_msg.actuator_states[motor_id].current =
@@ -245,6 +250,7 @@ class ScoutMessenger {
       // actuator_ls_state
       motor_id = actuator.actuator_ls_state[i].motor_id;
 
+      status_msg.actuator_states[motor_id].motor_id = motor_id;
       status_msg.actuator_states[motor_id].driver_voltage =
           actuator.actuator_ls_state[i].driver_voltage;
       status_msg.actuator_states[motor_id].driver_temperature =
