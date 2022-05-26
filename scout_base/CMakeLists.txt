@@ -25,7 +25,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES scout_messenger
   CATKIN_DEPENDS ugv_sdk scout_msgs tf tf2 tf2_ros
 #   DEPENDS Boost
 )
